@@ -5,10 +5,20 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 )
+
+type APIError struct {
+	Code    string `json:"code,omitempty"`
+	Message string `json:"error,omitempty"`
+}
+
+func (a APIError) Error() string {
+	return a.Message
+}
 
 func (c *Client) newRequest(ctx context.Context, method, path string, params url.Values, data interface{}) (*http.Request, error) {
 	url, err := c.composeRequestURL(path, params)
@@ -58,15 +68,45 @@ func (c *Client) composeRequestURL(path string, params url.Values) (string, erro
 	return u.String(), nil
 }
 
-func (c *Client) makeRequest(ctx context.Context, method, path string, params url.Values, data interface{}) (*http.Response, error) {
-	request, err := c.newRequest(ctx, method, path, params, data)
-	if err != nil {
-		return nil, err
+func (c *Client) readResponse(response *http.Response, result interface{}) error {
+	if response.Body == nil {
+		return errors.New("response body is nil")
 	}
-	resp, err := c.HTTP.Do(request)
+	defer response.Body.Close()
+
+	respBytes, err := io.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return resp, nil
+	if response.StatusCode >= 400 {
+		var respError APIError
+		err = json.Unmarshal(respBytes, &respError)
+		if err != nil {
+			return err
+		}
+
+		return respError
+	}
+
+	err = json.Unmarshal(respBytes, result)
+	if err != nil {
+		return fmt.Errorf("failed to unmarshall body: %w", err)
+	}
+
+	return nil
+}
+
+func (c *Client) makeRequest(ctx context.Context, method, path string, params url.Values, data, result interface{}) error {
+	request, err := c.newRequest(ctx, method, path, params, data)
+	if err != nil {
+		return err
+	}
+
+	resp, err := c.HTTP.Do(request)
+	if err != nil {
+		return err
+	}
+
+	return c.readResponse(resp, result)
 }

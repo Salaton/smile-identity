@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type BasicKYCInput struct {
+type KYCInput struct {
 	CallbackURL      string        `json:"callback_url"`
 	Country          string        `json:"country"`
 	DOB              time.Time     `json:"dob"`
@@ -26,52 +26,19 @@ type BasicKYCInput struct {
 }
 
 type PartnerParams struct {
-	JobID  string `json:"job_id"`
-	UserID string `json:"user_id"`
+	JobID   string `json:"job_id,omitempty"`
+	UserID  string `json:"user_id,omitempty"`
+	JobType int    `json:"job_type,omitempty"`
 }
 
-type ResultText string
-
-const (
-	PartialMatch ResultText = "Partial Match"
-	ExactMatch   ResultText = "Exact Match"
-	NoMatch      ResultText = "No Match"
-)
-
-type VerifyIDNumber string
-
-const (
-	Verified          VerifyIDNumber = "Verified"
-	NotVerified       VerifyIDNumber = "Not Verified"
-	NotDone           VerifyIDNumber = "Not Done"
-	IssuerUnavailable VerifyIDNumber = "Issuer Unavailable"
-)
-
-type MatchResult string
-
-const (
-	MatchExact      MatchResult = "Exact Match"
-	MatchPartial    MatchResult = "Partial Match"
-	MatchTransposed MatchResult = "Transposed"
-	MatchNoMatch    MatchResult = "No Match"
-)
-
-type GenderMatch string
-
-const (
-	GenderExact       GenderMatch = "Exact Match"
-	GenderNoMatch     GenderMatch = "No Match"
-	GenderNotProvided GenderMatch = "Not Provided"
-)
-
 type Actions struct {
-	DOB                MatchResult    `json:"DOB,omitempty"`
-	Gender             GenderMatch    `json:"Gender,omitempty"`
-	IDVerification     MatchResult    `json:"ID_Verification,omitempty"`
-	Names              MatchResult    `json:"Names,omitempty"`
-	PhoneNumber        MatchResult    `json:"Phone_Number,omitempty"`
-	ReturnPersonalInfo string         `json:"Return_Personal_Info,omitempty"`
-	VerifyIDNumber     VerifyIDNumber `json:"Verify_ID_Number,omitempty"`
+	DOB                MatchResult            `json:"DOB,omitempty"`
+	Gender             GenderMatch            `json:"Gender,omitempty"`
+	IDVerification     MatchResult            `json:"ID_Verification,omitempty"`
+	Names              MatchResult            `json:"Names,omitempty"`
+	PhoneNumber        MatchResult            `json:"Phone_Number,omitempty"`
+	ReturnPersonalInfo ReturnPersonalInfoEnum `json:"Return_Personal_Info,omitempty"`
+	VerifyIDNumber     VerifyIDNumber         `json:"Verify_ID_Number,omitempty"`
 }
 
 type BasicKYCVerificationResult struct {
@@ -85,7 +52,7 @@ type BasicKYCVerificationResult struct {
 	Timestamp     time.Time     `json:"timestamp,omitempty"`
 }
 
-func (c *Client) BasicKYCAsyncVerification(ctx context.Context, input *BasicKYCInput) (*BasicKYCVerificationResult, error) {
+func (c *Client) BasicKYCAsyncVerification(ctx context.Context, input *KYCInput) (*BasicKYCVerificationResult, error) {
 	var resp BasicKYCVerificationResult
 
 	err := c.makeRequest(ctx, http.MethodPost, "v2/verify_async", nil, input, resp)
@@ -96,7 +63,7 @@ func (c *Client) BasicKYCAsyncVerification(ctx context.Context, input *BasicKYCI
 	return &resp, nil
 }
 
-func (c *Client) BasicKYCVerification(ctx context.Context, input *BasicKYCInput) (*BasicKYCVerificationResult, error) {
+func (c *Client) BasicKYCVerification(ctx context.Context, input *KYCInput) (*BasicKYCVerificationResult, error) {
 	var resp BasicKYCVerificationResult
 
 	err := c.makeRequest(ctx, http.MethodPost, "v2/verify", nil, input, resp)

@@ -20,7 +20,12 @@ func (a APIError) Error() string {
 	return a.Message
 }
 
-func (c *Client) newRequest(ctx context.Context, method, path string, params url.Values, data interface{}) (*http.Request, error) {
+func (c *Client) newRequest(
+	ctx context.Context,
+	method, path string,
+	params url.Values,
+	data interface{},
+) (*http.Request, error) {
 	url, err := c.composeRequestURL(path, params)
 	if err != nil {
 		return nil, err
@@ -46,6 +51,7 @@ func (c *Client) newRequest(ctx context.Context, method, path string, params url
 		if err != nil {
 			return nil, err
 		}
+
 		request.Body = io.NopCloser(bytes.NewReader(b))
 	}
 
@@ -81,6 +87,7 @@ func (c *Client) readResponse(response *http.Response, result interface{}) error
 
 	if response.StatusCode >= 400 {
 		var respError APIError
+
 		err = json.Unmarshal(respBytes, &respError)
 		if err != nil {
 			return err
@@ -97,7 +104,12 @@ func (c *Client) readResponse(response *http.Response, result interface{}) error
 	return nil
 }
 
-func (c *Client) makeRequest(ctx context.Context, method, path string, params url.Values, data, result interface{}) error {
+func (c *Client) makeRequest(
+	ctx context.Context,
+	method, path string,
+	params url.Values,
+	data, result interface{},
+) error {
 	request, err := c.newRequest(ctx, method, path, params, data)
 	if err != nil {
 		return err

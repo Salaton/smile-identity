@@ -20,7 +20,10 @@ func (c *Client) VerifyPhoneNumberAsync(ctx context.Context, input *PhoneNumberV
 	return &resp, nil
 }
 
-func (c *Client) VerifyPhoneNumber(ctx context.Context, input *PhoneNumberVerification) (*PhoneNumberVerificationResponse, error) {
+func (c *Client) VerifyPhoneNumber(
+	ctx context.Context,
+	input *PhoneNumberVerification,
+) (*PhoneNumberVerificationResponse, error) {
 	var resp PhoneNumberVerificationResponse
 
 	params := c.phoneVerificationRequestHeaders()

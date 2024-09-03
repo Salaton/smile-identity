@@ -60,3 +60,30 @@ type KYCVerificationResult struct {
 type AsyncResponse struct {
 	Success bool `json:"success,omitempty"`
 }
+
+type MatchFields struct {
+	FirstName string `json:"first_name,omitempty"`
+	LastName  string `json:"last_name,omitempty"`
+	OtherName string `json:"other_name,omitempty"`
+	IDNumber  string `json:"id_number,omitempty"`
+}
+
+type PhoneNumberVerification struct {
+	CallbackURL string      `json:"callback_url,omitempty"`
+	Country     string      `json:"country,omitempty"`
+	PhoneNumber string      `json:"phone_number,omitempty"`
+	MatchFields MatchFields `json:"match_fields,omitempty"`
+}
+
+type PhoneNumberVerificationResponse struct {
+	Code          string        `json:"code,omitempty"`
+	CreatedAt     time.Time     `json:"created_at,omitempty"`
+	JobID         string        `json:"job_id,omitempty"`
+	JobType       string        `json:"job_type,omitempty"`
+	MatchedFields MatchFields   `json:"matched_fields,omitempty"`
+	Message       string        `json:"message,omitempty"`
+	PartnerID     string        `json:"partner_id,omitempty"`
+	PartnerParams PartnerParams `json:"partner_params,omitempty"`
+	Signature     string        `json:"signature,omitempty"`
+	Timestamp     time.Time     `json:"timestamp,omitempty"`
+}

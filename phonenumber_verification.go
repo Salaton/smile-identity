@@ -3,16 +3,15 @@ package smileidentity
 import (
 	"context"
 	"net/http"
-	"net/url"
 	"time"
 )
 
 func (c *Client) VerifyPhoneNumberAsync(ctx context.Context, input *PhoneNumberVerification) (*AsyncResponse, error) {
 	var resp AsyncResponse
 
-	params := c.phoneVerificationRequestHeaders()
+	headers := c.phoneVerificationRequestHeaders()
 
-	err := c.makeRequest(ctx, http.MethodPost, "v2/async-verify-phone", params, input, resp)
+	err := c.makeRequest(ctx, http.MethodPost, "v2/async-verify-phone", nil, headers, input, resp)
 	if err != nil {
 		return nil, err
 	}
@@ -26,9 +25,9 @@ func (c *Client) VerifyPhoneNumber(
 ) (*PhoneNumberVerificationResponse, error) {
 	var resp PhoneNumberVerificationResponse
 
-	params := c.phoneVerificationRequestHeaders()
+	headers := c.phoneVerificationRequestHeaders()
 
-	err := c.makeRequest(ctx, http.MethodPost, "v2/verify-phone-number", params, input, resp)
+	err := c.makeRequest(ctx, http.MethodPost, "v2/verify-phone-number", nil, headers, input, resp)
 	if err != nil {
 		return nil, err
 	}
@@ -36,13 +35,14 @@ func (c *Client) VerifyPhoneNumber(
 	return &resp, nil
 }
 
-func (c *Client) phoneVerificationRequestHeaders() url.Values {
-	params := url.Values{}
-	params.Add("smileid-partner-id", c.partnerID)
-	params.Add("smileid-request-signature", c.generateSignature())
-	params.Add("smileid-timestamp", time.Now().String())
-	params.Add("smileid-source-sdk", "rest_api")
-	params.Add("smileid-source-sdk-version", "1.0.0")
+func (c *Client) phoneVerificationRequestHeaders() http.Header {
+	header := http.Header{}
 
-	return params
+	header.Add("smileid-partner-id", c.partnerID)
+	header.Add("smileid-request-signature", c.generateSignature())
+	header.Add("smileid-timestamp", time.Now().Format(time.RFC3339))
+	header.Add("smileid-source-sdk", "rest_api")
+	header.Add("smileid-source-sdk-version", "1.0.0")
+
+	return header
 }

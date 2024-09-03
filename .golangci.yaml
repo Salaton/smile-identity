@@ -15,6 +15,7 @@ linters:
     - exhaustivestruct
     - exhaustruct
     - mnd
+    - canonicalheader
 
 linters-settings:
   staticcheck:

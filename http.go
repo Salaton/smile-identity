@@ -24,6 +24,7 @@ func (c *Client) newRequest(
 	ctx context.Context,
 	method, path string,
 	params url.Values,
+	headers http.Header,
 	data interface{},
 ) (*http.Request, error) {
 	url, err := c.composeRequestURL(path, params)
@@ -37,6 +38,12 @@ func (c *Client) newRequest(
 	}
 
 	c.setHeaders(request)
+
+	for key, values := range headers {
+		for _, value := range values {
+			request.Header.Add(key, value)
+		}
+	}
 
 	switch payload := data.(type) {
 	// if data is nil, there is no body to include in the request
@@ -108,9 +115,10 @@ func (c *Client) makeRequest(
 	ctx context.Context,
 	method, path string,
 	params url.Values,
+	headers http.Header,
 	data, result interface{},
 ) error {
-	request, err := c.newRequest(ctx, method, path, params, data)
+	request, err := c.newRequest(ctx, method, path, params, headers, data)
 	if err != nil {
 		return err
 	}

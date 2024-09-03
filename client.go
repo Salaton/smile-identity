@@ -19,7 +19,7 @@ type Client struct {
 	HTTP *http.Client
 }
 
-// NewClient creates a new smile id api client
+// NewClient creates a new smile id api client.
 func NewClient(apiKey, partnerID, baseURL, callbackURL string) (*Client, error) {
 	switch {
 	case apiKey == "":
@@ -42,7 +42,7 @@ func NewClient(apiKey, partnerID, baseURL, callbackURL string) (*Client, error) 
 }
 
 // NewClientFromEnvVars creates a new client where the needed fields are
-// retrieved from the environment variables
+// retrieved from the environment variables.
 func NewClientFromEnvVars() (*Client, error) {
 	return NewClient(
 		os.Getenv("SMILE_ID_API_KEY"),
@@ -52,7 +52,8 @@ func NewClientFromEnvVars() (*Client, error) {
 	)
 }
 
-// generateSignature generates a base64-encoded HMAC-SHA256 signature using a timestamp, partner ID, and a fixed string ("sid_request"),
+// generateSignature generates a base64-encoded HMAC-SHA256 signature using a timestamp,
+// partner ID, and a fixed string ("sid_request"),
 // with the API Key as the secret key.
 func (c *Client) generateSignature() string {
 	timeStamp := time.Now().Format(time.RFC3339)

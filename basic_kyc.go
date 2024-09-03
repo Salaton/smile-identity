@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-func (c *Client) BasicKYCAsyncVerification(ctx context.Context, input *KYCInput) (*KYCVerificationResult, error) {
-	var resp KYCVerificationResult
+func (c *Client) BasicKYCAsyncVerification(ctx context.Context, input *KYCInput) (*AsyncResponse, error) {
+	var resp AsyncResponse
 
 	err := c.makeRequest(ctx, http.MethodPost, "v2/verify_async", nil, input, resp)
 	if err != nil {

@@ -56,3 +56,7 @@ type KYCVerificationResult struct {
 	Timestamp         time.Time     `json:"timestamp,omitempty"`
 	Source            string        `json:"Source,omitempty"`
 }
+
+type AsyncResponse struct {
+	Success bool `json:"success,omitempty"`
+}

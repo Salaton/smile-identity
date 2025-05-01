@@ -87,3 +87,24 @@ type PhoneNumberVerificationResponse struct {
 	Signature     string        `json:"signature,omitempty"`
 	Timestamp     time.Time     `json:"timestamp,omitempty"`
 }
+
+type ModelParameters struct{}
+
+type RequestJobPayload struct {
+	CallbackURL      string          `json:"callback_url,omitempty"`
+	ModelParameters  ModelParameters `json:"model_parameters,omitempty"`
+	PartnerParams    PartnerParams   `json:"partner_params,omitempty"`
+	Signature        string          `json:"signature,omitempty"`
+	SmileClientID    string          `json:"smile_client_id,omitempty"`
+	SourceSDK        string          `json:"source_sdk,omitempty"`
+	SourceSDKVersion string          `json:"source_sdk_version,omitempty"`
+	Timestamp        time.Time       `json:"timestamp,omitempty"`
+}
+
+type RequestJobResponse struct {
+	UploadURL    string `json:"upload_url,omitempty"`
+	RefID        string `json:"ref_id,omitempty"`
+	SmileJobID   string `json:"smile_job_id,omitempty"`
+	CameraConfig string `json:"camera_config,omitempty"`
+	Code         string `json:"code,omitempty"`
+}

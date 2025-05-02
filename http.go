@@ -25,7 +25,7 @@ func (c *Client) newRequest(
 	method, path string,
 	params url.Values,
 	headers http.Header,
-	data interface{},
+	data any,
 ) (*http.Request, error) {
 	url, err := c.composeRequestURL(path, params)
 	if err != nil {
@@ -81,7 +81,7 @@ func (c *Client) composeRequestURL(path string, params url.Values) (string, erro
 	return u.String(), nil
 }
 
-func (c *Client) readResponse(response *http.Response, result interface{}) error {
+func (c *Client) readResponse(response *http.Response, result any) error {
 	if response.Body == nil {
 		return errors.New("response body is nil")
 	}
@@ -116,7 +116,7 @@ func (c *Client) makeRequest(
 	method, path string,
 	params url.Values,
 	headers http.Header,
-	data, result interface{},
+	data, result any,
 ) error {
 	request, err := c.newRequest(ctx, method, path, params, headers, data)
 	if err != nil {

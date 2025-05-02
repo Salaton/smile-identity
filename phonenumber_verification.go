@@ -11,7 +11,7 @@ func (c *Client) VerifyPhoneNumberAsync(ctx context.Context, input *PhoneNumberV
 
 	headers := c.phoneVerificationRequestHeaders()
 
-	err := c.makeRequest(ctx, http.MethodPost, "v2/async-verify-phone", nil, headers, input, resp)
+	err := c.makeRequest(ctx, http.MethodPost, "v2/async-verify-phone", nil, headers, input, &resp)
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func (c *Client) VerifyPhoneNumber(
 
 	headers := c.phoneVerificationRequestHeaders()
 
-	err := c.makeRequest(ctx, http.MethodPost, "v2/verify-phone-number", nil, headers, input, resp)
+	err := c.makeRequest(ctx, http.MethodPost, "v2/verify-phone-number", nil, headers, input, &resp)
 	if err != nil {
 		return nil, err
 	}

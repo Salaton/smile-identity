@@ -10,7 +10,7 @@ func (c *Client) JobRequest(ctx context.Context, input *RequestJobPayload) (*Req
 
 	input.PartnerParams.JobType = 6
 
-	err := c.makeRequest(ctx, http.MethodPost, "v1/upload", nil, nil, input, resp)
+	err := c.makeRequest(ctx, http.MethodPost, "v1/upload", nil, nil, input, &resp)
 	if err != nil {
 		return nil, err
 	}

@@ -19,23 +19,36 @@ type Client struct {
 	HTTP *http.Client
 }
 
+type Config struct {
+	APIKey      string `json:"apiKey,omitempty"`
+	PartnerID   string `json:"partnerID,omitempty"`
+	BaseURL     string `json:"baseURL,omitempty"`
+	CallbackURL string `json:"callbackURL,omitempty"`
+
+	HTTPClient *http.Client `json:"httpClient,omitempty"`
+}
+
 // NewClient creates a new smile id api client.
-func NewClient(apiKey, partnerID, baseURL, callbackURL string) (*Client, error) {
+func NewClient(config Config) (*Client, error) {
 	switch {
-	case apiKey == "":
+	case config.APIKey == "":
 		return nil, errors.New("API key is empty")
-	case partnerID == "":
+	case config.PartnerID == "":
 		return nil, errors.New("partner ID is empty")
-	case baseURL == "":
+	case config.BaseURL == "":
 		return nil, errors.New("baseURL is empty")
 	}
 
 	client := &Client{
-		apiKey:      apiKey,
-		partnerID:   partnerID,
-		HTTP:        &http.Client{},
-		callBackURL: callbackURL,
-		baseURL:     baseURL,
+		apiKey:      config.APIKey,
+		partnerID:   config.PartnerID,
+		HTTP:        config.HTTPClient,
+		callBackURL: config.CallbackURL,
+		baseURL:     config.BaseURL,
+	}
+
+	if client.HTTP == nil {
+		client.HTTP = &http.Client{}
 	}
 
 	return client, nil
@@ -45,10 +58,13 @@ func NewClient(apiKey, partnerID, baseURL, callbackURL string) (*Client, error) 
 // retrieved from the environment variables.
 func NewClientFromEnvVars() (*Client, error) {
 	return NewClient(
-		os.Getenv("SMILE_ID_API_KEY"),
-		os.Getenv("SMILE_ID_PARTNER_ID"),
-		os.Getenv("SMILE_ID_BASE_URL"),
-		os.Getenv("SMILE_ID_CALLBACK_URL"),
+		Config{
+			APIKey:      os.Getenv("SMILE_ID_API_KEY"),
+			PartnerID:   os.Getenv("SMILE_ID_PARTNER_ID"),
+			BaseURL:     os.Getenv("SMILE_ID_BASE_URL"),
+			CallbackURL: os.Getenv("SMILE_ID_CALLBACK_URL"),
+			HTTPClient:  &http.Client{},
+		},
 	)
 }
 
